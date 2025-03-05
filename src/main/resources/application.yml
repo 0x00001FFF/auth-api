@@ -1,0 +1,31 @@
+server:
+  servlet:
+    context-path: /api/v1
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: on-param
+  forward-headers-strategy: framework
+
+spring:
+  flyway:
+    enabled: ${FLYWAY_ENABLED:false}
+    locations: classpath:db/migration
+  docker:
+    compose:
+      enabled: ${DOCKER_ENABLED:false}
+  application:
+    name: auth-api
+  jpa:
+    properties:
+      jdbc:
+        time_zone: utc
+    hibernate:
+      dialect: ${DIALECT:org.hibernate.dialect.h2dialect}
+      ddl-auto: ${DDL_HIBERNATE:update}
+    show-sql: true
+  datasource:
+    url: ${URL_BANCO:jdbc:h2:mem:banco}
+    username: ${USERNAME_DB:sa}
+    password: ${PASSWORD_DB:12345}
