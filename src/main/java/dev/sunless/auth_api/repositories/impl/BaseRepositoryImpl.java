@@ -5,7 +5,6 @@ import dev.sunless.auth_api.models.BaseEntity;
 import dev.sunless.auth_api.repositories.BaseRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
@@ -25,7 +24,6 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
     }
 
     @Override
-    @Transactional
     public void softDeleteById(ID id) {
         T entity = this.findById(id).orElseThrow(() -> new IllegalArgumentException("Entity not found"));
 
@@ -37,6 +35,7 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
         if (entity instanceof BaseEntity) {
             ((BaseEntity) entity).setDeletedAt(value);
             entityManager.merge(entity);
+            entityManager.flush();
         }
         else throw new SoftDeleteException("This entity does not inherit from the base entity");
     }
