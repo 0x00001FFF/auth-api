@@ -15,5 +15,7 @@ public interface BaseRepository<T, ID> extends JpaRepository<T, ID> {
 
     List<T> findAllActive();
 
+    List<T> findAllInactive();
+
     Optional<T> findByIdActive(ID id);
 }

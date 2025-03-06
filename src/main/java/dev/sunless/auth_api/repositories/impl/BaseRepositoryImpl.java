@@ -62,6 +62,15 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
     }
 
     @Override
+    public List<T> findAllInactive() {
+        String jpql = """
+                SELECT e FROM %s e
+                WHERE e.deletedAt IS NOT NULL
+                """.formatted(getDomainClass().getName());
+        return entityManager.createQuery(jpql, getDomainClass()).getResultList();
+    }
+
+    @Override
     public Optional<T> findByIdActive(ID id) {
         String jpql = """
                 SELECT e FROM %S e
