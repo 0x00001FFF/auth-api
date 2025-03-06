@@ -73,14 +73,16 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
     @Override
     public Optional<T> findByIdActive(ID id) {
         String jpql = """
-                SELECT e FROM %S e
+                SELECT e FROM %s e
                 WHERE e.id = :id
                 AND e.deletedAt IS NULL
                 """.formatted(getDomainClass().getName());
-        return Optional.of(
-                entityManager.createQuery(jpql, getDomainClass())
+        List<T> result = entityManager.createQuery(jpql, getDomainClass())
                         .setParameter("id", id)
-                        .getSingleResult()
-        );
+                        .getResultList();
+
+        return result.isEmpty()
+                ? Optional.empty()
+                : Optional.of(result.get(0));
     }
 }
