@@ -16,6 +16,9 @@ public interface RoleService {
     @Transactional
     Role update(Role newRole, UUID id);
 
+    @Transactional
+    Role updatePermissions(UUID id, List<UUID> permissions);
+
     Optional<Role> findById(UUID id);
 
     Optional<Role> findByIdActive(UUID id);

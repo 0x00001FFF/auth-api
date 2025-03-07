@@ -2,6 +2,7 @@ package dev.sunless.auth_api.services.impl;
 
 import dev.sunless.auth_api.exceptions.DuplicatedException;
 import dev.sunless.auth_api.exceptions.NotFoundException;
+import dev.sunless.auth_api.models.Permission;
 import dev.sunless.auth_api.models.Role;
 import dev.sunless.auth_api.repositories.RoleRepository;
 import dev.sunless.auth_api.services.RoleService;
@@ -10,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,6 +37,16 @@ public class RoleServiceImpl implements RoleService {
         LocalDateTime createdDate = role.getCreatedDate();
         BeanUtils.copyProperties(newRole, role, "id", "createdDate");
         role.setCreatedDate(createdDate);
+        return roleRepository.save(role);
+    }
+
+    @Override
+    public Role updatePermissions(UUID id, List<UUID> permissions) {
+        Role role = roleExistsOrThrow(id);
+        List<Permission> newPermissions = roleRepository.findByIdIn(permissions);
+        if (newPermissions.size() != permissions.size())
+            throw new IllegalArgumentException("Theres a invalid permission in the request");
+        role.setPermissions(new HashSet<>(newPermissions));
         return roleRepository.save(role);
     }
 
