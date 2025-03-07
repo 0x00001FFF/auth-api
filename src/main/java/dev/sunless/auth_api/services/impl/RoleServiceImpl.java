@@ -40,22 +40,22 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Optional<Role> findById(UUID id) {
-        return Optional.empty();
+        return roleRepository.findById(id);
     }
 
     @Override
     public Optional<Role> findByIdActive(UUID id) {
-        return Optional.empty();
+        return roleRepository.findByIdActive(id);
     }
 
     @Override
     public List<Role> findAll() {
-        return List.of();
+        return roleRepository.findAllActive();
     }
 
     @Override
     public List<Role> findAllInactive() {
-        return List.of();
+        return roleRepository.findAllInactive();
     }
 
     @Override
