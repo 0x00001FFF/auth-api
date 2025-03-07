@@ -86,7 +86,8 @@ public class RoleControllerImpl implements RoleController {
 
     @Override
     public ResponseEntity<Void> deleteById(UUID id) {
-        return null;
+        roleService.deleteById(id);
+        return ResponseEntity.status(204).build();
     }
 
     @Override
