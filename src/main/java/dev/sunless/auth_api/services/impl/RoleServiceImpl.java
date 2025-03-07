@@ -60,21 +60,36 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void deleteById(UUID id) {
-
+        Role role = roleExistsOrThrow(id);
+        if(role.isSoftDeleted())
+            throw new IllegalStateException("Cannot hard delete an active permission");
+        roleRepository.deleteById(id);
     }
 
     @Override
     public Role softDeleteById(UUID id) {
-        return null;
+        Role role = roleExistsOrThrow(id);
+        roleRepository.softDeleteById(id);
+        return role;
     }
 
     @Override
     public Role undeleteById(UUID id) {
-        return null;
+        Role role = roleExistsOrThrow(id);
+        if(role.isSoftDeleted())
+            throw new IllegalStateException("Cannot hard delete an active permission");
+        roleRepository.undeleteById(id);
+        return role;
     }
 
     @Override
     public Boolean existsById(UUID id) {
-        return null;
+        return roleRepository.existsById(id);
+    }
+
+    private Role roleExistsOrThrow(UUID id) {
+        return findById(id).orElseThrow(
+                () -> new NotFoundException("Role with ID: " + id)
+        );
     }
 }
