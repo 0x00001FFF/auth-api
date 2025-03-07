@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface RoleMapper {
 
-    RoleResponseDto toResponse(RoleResponseDto responseDto);
+    RoleResponseDto toResponse(Role role);
 
     Role toModel(RoleRequestDto requestDto);
 
