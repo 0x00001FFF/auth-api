@@ -76,7 +76,12 @@ public class RoleControllerImpl implements RoleController {
 
     @Override
     public ResponseEntity<RoleResponseDto> update(RoleRequestDto requestDto, UUID id) {
-        return null;
+        Role newPermission = roleMapper.toModel(requestDto);
+        Role result = roleService.update(newPermission, id);
+
+        return Objects.isNull(result)
+                ? ResponseEntity.status(400).build()
+                : ResponseEntity.status(200).body(roleMapper.toResponse(result));
     }
 
     @Override
