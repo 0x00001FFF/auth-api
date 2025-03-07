@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -65,7 +66,12 @@ public class RoleControllerImpl implements RoleController {
 
     @Override
     public ResponseEntity<RoleResponseDto> save(RoleRequestDto requestDto) {
-        return null;
+        Role role = roleMapper.toModel(requestDto);
+        Role result = roleService.save(role);
+
+        return Objects.isNull(result)
+                ? ResponseEntity.status(400).build()
+                : ResponseEntity.status(201).body(roleMapper.toResponse(result));
     }
 
     @Override
