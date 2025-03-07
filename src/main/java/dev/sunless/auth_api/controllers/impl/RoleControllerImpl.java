@@ -56,7 +56,11 @@ public class RoleControllerImpl implements RoleController {
 
     @Override
     public ResponseEntity<RoleResponseDto> findById(UUID id) {
-        return null;
+        Optional<Role> role = roleService.findByIdActive(id);
+        return role
+                .map(roleMapper::toResponse)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(404).build());
     }
 
     @Override
