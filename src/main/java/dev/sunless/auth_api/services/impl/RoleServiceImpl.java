@@ -29,7 +29,13 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role update(Role newRole, UUID id) {
-        return null;
+        Role role = roleExistsOrThrow(id);
+        String name = role.getName();
+        if (!roleRepository.existsByName(name)) throw new DuplicatedException("Role");
+        LocalDateTime createdDate = role.getCreatedDate();
+        BeanUtils.copyProperties(newRole, role, "id", "createdDate");
+        role.setCreatedDate(createdDate);
+        return roleRepository.save(role);
     }
 
     @Override
