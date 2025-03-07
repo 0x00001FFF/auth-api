@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(DuplicatedPermissionException.class)
-    public ResponseEntity<ErrorResponseDTO> handleDuplicatedPermissionException(DuplicatedPermissionException e) {
+    @ExceptionHandler(DuplicatedException.class)
+    public ResponseEntity<ErrorResponseDTO> handleDuplicatedPermissionException(DuplicatedException e) {
         ErrorResponseDTO responseDTO = new ErrorResponseDTO("409",
                 new ErrorResponseDTO.ErrorContent(e.getMessage(), LocalDateTime.now())
         );
