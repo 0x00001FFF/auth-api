@@ -42,7 +42,16 @@ public class RoleControllerImpl implements RoleController {
 
     @Override
     public ResponseEntity<List<InactiveRoleResponseDto>> findAllInactive() {
-        return null;
+        List<Role> roles = roleService.findAllInactive();
+
+        return Optional.of(roles)
+                .filter(list -> !list.isEmpty())
+                .map(list -> list
+                        .stream()
+                        .map(roleMapper::toInactiveResponse)
+                        .toList())
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
     }
 
     @Override
