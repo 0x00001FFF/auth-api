@@ -94,16 +94,26 @@ public class RoleControllerImpl implements RoleController {
 
     @Override
     public ResponseEntity<InactiveRoleResponseDto> softDeleteById(UUID id) {
-        return null;
+        Role role = roleService.softDeleteById(id);
+        return ResponseEntity.status(200).body(
+                roleMapper.toInactiveResponse(role)
+        );
     }
 
     @Override
     public ResponseEntity<RoleResponseDto> undeleteById(UUID id) {
-        return null;
+        Role role = roleService.undeleteById(id);
+        return ResponseEntity.status(200).body(
+                roleMapper.toResponse(role)
+        );
     }
 
     @Override
     public ResponseEntity<RoleResponseDto> updatePermissions(RolePermissionRequestDto permissionRequestDto, UUID id) {
-        return null;
+        Set<UUID> permissions = permissionRequestDto.getPermissions();
+        Role role = roleService.updatePermissions(id, permissions);
+        return ResponseEntity.status(200).body(
+                roleMapper.toResponse(role)
+        );
     }
 }
