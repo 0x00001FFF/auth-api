@@ -13,7 +13,7 @@ public interface RoleService {
 
 
     @Transactional
-    Role save(Role role);
+    Role save(Role role, Set<UUID> permissions);
 
     @Transactional
     Role update(Role newRole, UUID id);

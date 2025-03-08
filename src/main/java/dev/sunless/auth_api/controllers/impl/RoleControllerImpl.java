@@ -6,17 +6,16 @@ import dev.sunless.auth_api.dtos.request.RoleRequestDto;
 import dev.sunless.auth_api.dtos.response.InactiveRoleResponseDto;
 import dev.sunless.auth_api.dtos.response.RoleResponseDto;
 import dev.sunless.auth_api.mappers.RoleMapper;
+import dev.sunless.auth_api.models.Permission;
 import dev.sunless.auth_api.models.Role;
+import dev.sunless.auth_api.services.PermissionService;
 import dev.sunless.auth_api.services.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,6 +24,7 @@ public class RoleControllerImpl implements RoleController {
 
     public static final String BASE_URL = "roles";
     private final RoleService roleService;
+    private final PermissionService permissionService;
     private final RoleMapper roleMapper;
 
     @Override
@@ -66,8 +66,9 @@ public class RoleControllerImpl implements RoleController {
 
     @Override
     public ResponseEntity<RoleResponseDto> save(RoleRequestDto requestDto) {
-        Role role = roleMapper.toModel(requestDto);
-        Role result = roleService.save(role);
+        Set<Permission> permissions = permissionService.findByIdIn(requestDto.getPermissions());
+        Role role = roleMapper.toModel(requestDto, permissions);
+        Role result = roleService.save(role, requestDto.getPermissions());
 
         return Objects.isNull(result)
                 ? ResponseEntity.status(400).build()
@@ -76,8 +77,9 @@ public class RoleControllerImpl implements RoleController {
 
     @Override
     public ResponseEntity<RoleResponseDto> update(RoleRequestDto requestDto, UUID id) {
-        Role newPermission = roleMapper.toModel(requestDto);
-        Role result = roleService.update(newPermission, id);
+        Set<Permission> permissions = permissionService.findByIdIn(requestDto.getPermissions());
+        Role newRole = roleMapper.toModel(requestDto, permissions);
+        Role result = roleService.update(newRole, id);
 
         return Objects.isNull(result)
                 ? ResponseEntity.status(400).build()

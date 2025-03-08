@@ -11,9 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -97,4 +95,8 @@ public class PermissionServiceImpl implements PermissionService {
         );
     }
 
+    @Override
+    public Set<Permission> findByIdIn(Set<UUID> ids) {
+        return new HashSet<>(permissionRepository.findByIdIn(ids));
+    }
 }
