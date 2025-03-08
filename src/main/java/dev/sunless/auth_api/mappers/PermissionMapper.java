@@ -8,17 +8,17 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface PermissionMapper {
+public abstract class PermissionMapper {
 
     @Mapping(target = "name", source = "name")
-    Permission toModel(PermissionRequestDto dto);
+    public abstract Permission toModel(PermissionRequestDto dto);
 
     @Mapping(target = "id", source = "permission.id")
     @Mapping(target = "createdDate", source = "createdDate")
-    PermissionResponseDto toResponse(Permission permission);
+    public abstract PermissionResponseDto toResponse(Permission permission);
 
     @Mapping(target = "id", source = "permission.id")
     @Mapping(target = "name", source = "permission.name")
     @Mapping(target = "deletedAt", source = "permission.deletedAt")
-    InactivePermissionResponseDto toInactiveResponse(Permission permission);
+    public abstract InactivePermissionResponseDto toInactiveResponse(Permission permission);
 }
