@@ -22,9 +22,11 @@ public class RoleServiceImpl implements RoleService {
     private final PermissionRepository permissionRepository;
 
     @Override
-    public Role save(Role role) {
+    public Role save(Role role, Set<UUID> permissions) {
         String name = role.getName();
         if (roleRepository.existsByName(name)) throw new DuplicatedException("Role");
+        if (role.getPermissions().size() != permissions.size())
+            throw new IllegalArgumentException("There are invalid permissions in the request");
         return roleRepository.save(role);
     }
 
@@ -46,7 +48,7 @@ public class RoleServiceImpl implements RoleService {
             throw new IllegalStateException("Cannot update the permissions of an inactive Role");
         List<Permission> newPermissions = permissionRepository.findByIdIn(permissions);
         if (newPermissions.size() != permissions.size())
-            throw new IllegalArgumentException("Theres a invalid permission in the request");
+            throw new IllegalArgumentException("There are invalid permissions in the request");
         role.setPermissions(new HashSet<>(newPermissions));
         return roleRepository.save(role);
     }
