@@ -18,5 +18,5 @@ public class RoleResponseDto extends BaseResponse {
     private UUID id;
     private String name;
     private String description;
-    private Set<Permission> permissions;
+    private Set<PermissionResponseDto> permissions;
 }

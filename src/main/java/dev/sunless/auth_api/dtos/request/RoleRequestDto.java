@@ -1,7 +1,6 @@
 package dev.sunless.auth_api.dtos.request;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -24,6 +23,6 @@ public class RoleRequestDto {
     private String description;
 
     @NotNull
-    private Set<@NotBlank(message = "Permission cannot be blank") UUID> permissions;
+    private Set<@NotNull(message = "Permission cannot be null") UUID> permissions;
 
 }
