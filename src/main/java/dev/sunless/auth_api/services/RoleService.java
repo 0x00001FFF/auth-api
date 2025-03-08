@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public interface RoleService {
@@ -17,7 +18,7 @@ public interface RoleService {
     Role update(Role newRole, UUID id);
 
     @Transactional
-    Role updatePermissions(UUID id, List<UUID> permissions);
+    Role updatePermissions(UUID id, Set<UUID> permissions);
 
     Optional<Role> findById(UUID id);
 

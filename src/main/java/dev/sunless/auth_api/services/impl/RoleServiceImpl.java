@@ -11,10 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -41,9 +38,11 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role updatePermissions(UUID id, List<UUID> permissions) {
+    public Role updatePermissions(UUID id, Set<UUID> permissions) {
         Role role = roleExistsOrThrow(id);
-        List<Permission> newPermissions = roleRepository.findByIdIn(permissions);
+        if (role.isSoftDeleted())
+            throw new IllegalStateException("Cannot update the permissions of an inactive Role");
+        List<Permission> newPermissions = permissionRepository.findByIdIn(permissions);
         if (newPermissions.size() != permissions.size())
             throw new IllegalArgumentException("Theres a invalid permission in the request");
         role.setPermissions(new HashSet<>(newPermissions));
