@@ -4,6 +4,7 @@ import dev.sunless.auth_api.exceptions.DuplicatedException;
 import dev.sunless.auth_api.exceptions.NotFoundException;
 import dev.sunless.auth_api.models.Permission;
 import dev.sunless.auth_api.models.Role;
+import dev.sunless.auth_api.repositories.PermissionRepository;
 import dev.sunless.auth_api.repositories.RoleRepository;
 import dev.sunless.auth_api.services.RoleService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.*;
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
+    private final PermissionRepository permissionRepository;
 
     @Override
     public Role save(Role role) {
@@ -102,5 +104,15 @@ public class RoleServiceImpl implements RoleService {
         return findById(id).orElseThrow(
                 () -> new NotFoundException("Role with ID: " + id)
         );
+    }
+
+    @Override
+    public void removePermissionFromRoles(UUID id) {
+        List<Role> roles = roleRepository.findByPermissionId(id);
+        roles.forEach(role -> role.getPermissions()
+                .removeIf( p ->
+                        p.getId().equals(id))
+        );
+        roleRepository.saveAll(roles);
     }
 }

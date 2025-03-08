@@ -1,5 +1,6 @@
 package dev.sunless.auth_api.services;
 
+import dev.sunless.auth_api.models.Permission;
 import dev.sunless.auth_api.models.Role;
 import jakarta.transaction.Transactional;
 
@@ -19,6 +20,9 @@ public interface RoleService {
 
     @Transactional
     Role updatePermissions(UUID id, Set<UUID> permissions);
+
+    @Transactional
+    void removePermissionFromRoles(UUID id);
 
     Optional<Role> findById(UUID id);
 

@@ -5,6 +5,7 @@ import dev.sunless.auth_api.exceptions.NotFoundException;
 import dev.sunless.auth_api.models.Permission;
 import dev.sunless.auth_api.repositories.PermissionRepository;
 import dev.sunless.auth_api.services.PermissionService;
+import dev.sunless.auth_api.services.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.UUID;
 public class PermissionServiceImpl implements PermissionService {
 
     private final PermissionRepository permissionRepository;
+    private final RoleService roleService;
 
     @Override
     public Permission save(Permission permission) {
@@ -70,6 +72,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public Permission softDeleteById(UUID id) {
         Permission permission = permissionExistsOrThrow(id);
+        roleService.removePermissionFromRoles(id);
         permissionRepository.softDeleteById(id);
         return permission;
     }
