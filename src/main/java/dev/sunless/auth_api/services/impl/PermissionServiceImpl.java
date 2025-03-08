@@ -1,13 +1,14 @@
 package dev.sunless.auth_api.services.impl;
 
+import dev.sunless.auth_api.events.PermissionDeletedEvent;
 import dev.sunless.auth_api.exceptions.DuplicatedException;
 import dev.sunless.auth_api.exceptions.NotFoundException;
 import dev.sunless.auth_api.models.Permission;
 import dev.sunless.auth_api.repositories.PermissionRepository;
 import dev.sunless.auth_api.services.PermissionService;
-import dev.sunless.auth_api.services.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,7 +19,7 @@ import java.util.*;
 public class PermissionServiceImpl implements PermissionService {
 
     private final PermissionRepository permissionRepository;
-    private final RoleService roleService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public Permission save(Permission permission) {
@@ -61,16 +62,15 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public void deleteById(UUID id) {
         Permission permission = permissionExistsOrThrow(id);
-
         if (!permission.isSoftDeleted())
             throw new IllegalStateException("Cannot hard delete an active permission");
+        eventPublisher.publishEvent(new PermissionDeletedEvent(this, id));
         permissionRepository.deleteById(id);
     }
 
     @Override
     public Permission softDeleteById(UUID id) {
         Permission permission = permissionExistsOrThrow(id);
-        roleService.removePermissionFromRoles(id);
         permissionRepository.softDeleteById(id);
         return permission;
     }
