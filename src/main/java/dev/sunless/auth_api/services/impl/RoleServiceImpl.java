@@ -22,7 +22,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role save(Role role) {
         String name = role.getName();
-        if (!roleRepository.existsByName(name)) throw new DuplicatedException("Role");
+        if (roleRepository.existsByName(name)) throw new DuplicatedException("Role");
         return roleRepository.save(role);
     }
 
@@ -30,7 +30,7 @@ public class RoleServiceImpl implements RoleService {
     public Role update(Role newRole, UUID id) {
         Role role = roleExistsOrThrow(id);
         String name = role.getName();
-        if (!roleRepository.existsByName(name)) throw new DuplicatedException("Role");
+        if (roleRepository.existsByName(name)) throw new DuplicatedException("Role");
         LocalDateTime createdDate = role.getCreatedDate();
         BeanUtils.copyProperties(newRole, role, "id", "createdDate");
         role.setCreatedDate(createdDate);
@@ -72,8 +72,8 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void deleteById(UUID id) {
         Role role = roleExistsOrThrow(id);
-        if(role.isSoftDeleted())
-            throw new IllegalStateException("Cannot hard delete an active permission");
+        if(!role.isSoftDeleted())
+            throw new IllegalStateException("Cannot hard delete an active Role");
         roleRepository.deleteById(id);
     }
 
@@ -87,8 +87,8 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role undeleteById(UUID id) {
         Role role = roleExistsOrThrow(id);
-        if(role.isSoftDeleted())
-            throw new IllegalStateException("Cannot hard delete an active permission");
+        if(!role.isSoftDeleted())
+            throw new IllegalStateException("Cannot undelete an active role");
         roleRepository.undeleteById(id);
         return role;
     }
