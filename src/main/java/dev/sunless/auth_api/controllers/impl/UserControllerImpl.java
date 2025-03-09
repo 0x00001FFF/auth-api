@@ -3,6 +3,7 @@ package dev.sunless.auth_api.controllers.impl;
 import dev.sunless.auth_api.controllers.UserController;
 import dev.sunless.auth_api.dtos.request.UserRequestDto;
 import dev.sunless.auth_api.dtos.request.UserRoleRequestDto;
+import dev.sunless.auth_api.dtos.request.UserUpdateDto;
 import dev.sunless.auth_api.dtos.response.InactiveUserResponseDto;
 import dev.sunless.auth_api.dtos.response.UserResponseDto;
 import dev.sunless.auth_api.mappers.UserMapper;
@@ -68,7 +69,15 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public ResponseEntity<UserResponseDto> update(UserRequestDto requestDto, UUID id) {
-        return null;
+        Set<Role> roles = roleService.findByIdIn(requestDto.getRoles());
+        User user = userMapper.toModel(requestDto, roles);
+        User result = userService.update(
+                new UserUpdateDto(user, requestDto.getRoles(), id)
+        );
+
+        return Objects.isNull(result)
+                ? ResponseEntity.status(400).build()
+                : ResponseEntity.status(200).body(userMapper.toResponse(result));
     }
 
     @Override
