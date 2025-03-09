@@ -1,6 +1,5 @@
 package dev.sunless.auth_api.services;
 
-import dev.sunless.auth_api.models.Permission;
 import dev.sunless.auth_api.models.Role;
 import jakarta.transaction.Transactional;
 
@@ -39,4 +38,6 @@ public interface RoleService {
     Role undeleteById(UUID id);
 
     Boolean existsById(UUID id);
+
+    Set<Role> findByIdIn(Set<UUID> ids);
 }

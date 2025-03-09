@@ -117,4 +117,9 @@ public class RoleServiceImpl implements RoleService {
         );
         roleRepository.saveAll(roles);
     }
+
+    @Override
+    public Set<Role> findByIdIn(Set<UUID> ids) {
+        return new HashSet<>(roleRepository.findByIdIn(ids));
+    }
 }
