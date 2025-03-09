@@ -94,17 +94,20 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public ResponseEntity<Void> deleteById(UUID id) {
-        return null;
+        userService.deleteById(id);
+        return ResponseEntity.status(204).build();
     }
 
     @Override
     public ResponseEntity<InactiveUserResponseDto> softDeleteById(UUID id) {
-        return null;
+        User user = userService.softDeleteById(id);
+        return ResponseEntity.status(200).body(userMapper.toInactiveResponse(user));
     }
 
     @Override
     public ResponseEntity<UserResponseDto> undeleteById(UUID id) {
-        return null;
+        User user = userService.undeleteById(id);
+        return ResponseEntity.status(200).body(userMapper.toResponse(user));
     }
 
     @Override

@@ -90,17 +90,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteById(UUID id) {
-
+        User user = userExistsOrThrow(id);
+        if (!user.isSoftDeleted())
+            throw new IllegalStateException("Cannot hard delete an active user");
+        userRepository.deleteById(id);
     }
 
     @Override
     public User softDeleteById(UUID id) {
-        return null;
+        User user = userExistsOrThrow(id);
+        userRepository.softDeleteById(id);
+        return user;
     }
 
     @Override
     public User undeleteById(UUID id) {
-        return null;
+        User user = userExistsOrThrow(id);
+        if (!user.isSoftDeleted())
+            throw new IllegalStateException("Cannot undelete an active user");
+        userRepository.undeleteById(id);
+        return user;
     }
 
 
