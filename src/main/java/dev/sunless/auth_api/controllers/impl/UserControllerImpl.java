@@ -48,7 +48,15 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public ResponseEntity<List<InactiveUserResponseDto>> findAllInactive() {
-        return null;
+        List<User> users = userService.findAllInactive();
+        return Optional.of(users)
+                .filter(list -> !list.isEmpty())
+                .map(list -> list
+                        .stream()
+                        .map(userMapper::toInactiveResponse)
+                        .collect(Collectors.toList()))
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(204).build());
     }
 
     @Override
