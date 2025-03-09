@@ -122,6 +122,14 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Override
+    public void removeRolesFromUsers(UUID id) {
+        List<User> users = userRepository.findByRoleId(id);
+        users.forEach(user -> user.getRoles()
+                .removeIf(r -> r.getId().equals(id))
+        );
+        userRepository.saveAll(users);
+    }
 
     private User userExistsOrThrow(UUID id) {
         return findById(id).orElseThrow(

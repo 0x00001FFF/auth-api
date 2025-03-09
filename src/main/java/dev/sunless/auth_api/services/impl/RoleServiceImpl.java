@@ -1,5 +1,6 @@
 package dev.sunless.auth_api.services.impl;
 
+import dev.sunless.auth_api.events.RoleDeletedEvent;
 import dev.sunless.auth_api.exceptions.DuplicatedException;
 import dev.sunless.auth_api.exceptions.NotFoundException;
 import dev.sunless.auth_api.models.Permission;
@@ -9,6 +10,7 @@ import dev.sunless.auth_api.repositories.RoleRepository;
 import dev.sunless.auth_api.services.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,6 +22,7 @@ public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public Role save(Role role, Set<UUID> permissions) {
@@ -78,6 +81,7 @@ public class RoleServiceImpl implements RoleService {
         Role role = roleExistsOrThrow(id);
         if(!role.isSoftDeleted())
             throw new IllegalStateException("Cannot hard delete an active Role");
+        eventPublisher.publishEvent(new RoleDeletedEvent(this, id));
         roleRepository.deleteById(id);
     }
 

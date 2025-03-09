@@ -34,4 +34,6 @@ public interface UserService {
 
     User undeleteById(UUID id);
 
+    @Transactional
+    void removeRolesFromUsers(UUID id);
 }
