@@ -61,7 +61,11 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public ResponseEntity<UserResponseDto> findById(UUID id) {
-        return null;
+        Optional<User> user = userService.findByIdActive(id);
+        return  user
+                .map(userMapper::toResponse)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(404).build());
     }
 
     @Override
