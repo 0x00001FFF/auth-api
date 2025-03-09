@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -15,6 +16,7 @@ import java.util.Set;
 public class InactiveUserResponseDto extends BaseResponse {
 
 
+    private UUID id;
     private String userName;
     private String email;
     private Set<SimpleRoleResponseDto> roles;

@@ -34,6 +34,7 @@ public abstract class UserMapper {
     @Mapping(target = "isActive", source = "user.isActive")
     @Mapping(target = "createdDate", source = "user.createdDate")
     @Mapping(target = "lastModified", source = "user.lastModified")
+    @Mapping(target = "id", source = "user.id")
     public abstract UserResponseDto toResponse(User user);
 
 
@@ -44,5 +45,6 @@ public abstract class UserMapper {
     @Mapping(target = "createdDate", source = "user.createdDate")
     @Mapping(target = "lastModified", source = "user.lastModified")
     @Mapping(target = "deletedAt", source = "user.deletedAt")
+    @Mapping(target = "id", source = "user.id")
     public abstract InactiveUserResponseDto toInactiveResponse(User user);
 }

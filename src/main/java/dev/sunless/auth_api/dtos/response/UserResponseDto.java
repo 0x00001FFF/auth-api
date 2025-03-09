@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
+import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -13,6 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class UserResponseDto extends BaseResponse {
 
+    private UUID id;
     private String userName;
     private String email;
     private Set<SimpleRoleResponseDto> roles;
