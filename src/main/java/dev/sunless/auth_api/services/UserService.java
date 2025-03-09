@@ -1,5 +1,6 @@
 package dev.sunless.auth_api.services;
 
+import dev.sunless.auth_api.dtos.request.UserUpdateDto;
 import dev.sunless.auth_api.models.User;
 import jakarta.transaction.Transactional;
 
@@ -14,7 +15,7 @@ public interface UserService {
     User save(User user, Set<UUID> roles);
 
     @Transactional
-    User update(User newUser, UUID id);
+    User update(UserUpdateDto dto);
 
     @Transactional
     User updateRoles(UUID id, Set<UUID> roles);
