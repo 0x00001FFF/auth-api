@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,7 +34,15 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public ResponseEntity<List<UserResponseDto>> findAllActive() {
-        return null;
+        List<User> users = userService.findAll();
+        return Optional.of(users)
+                .filter(list -> !list.isEmpty())
+                .map(list -> list
+                        .stream()
+                        .map(userMapper::toResponse)
+                        .collect(Collectors.toList()))
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(204).build());
     }
 
     @Override
