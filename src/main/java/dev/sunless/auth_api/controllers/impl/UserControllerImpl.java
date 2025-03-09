@@ -112,6 +112,9 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public ResponseEntity<UserResponseDto> updateRoles(UserRoleRequestDto userRoleRequestDto, UUID id) {
-        return null;
+        User user = userService.updateRoles(id, userRoleRequestDto.getRoles());
+        return ResponseEntity.status(200).body(
+                userMapper.toResponse(user)
+        );
     }
 }

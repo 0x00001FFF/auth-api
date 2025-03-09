@@ -3,7 +3,9 @@ package dev.sunless.auth_api.services.impl;
 import dev.sunless.auth_api.dtos.request.UserUpdateDto;
 import dev.sunless.auth_api.exceptions.DuplicatedException;
 import dev.sunless.auth_api.exceptions.NotFoundException;
+import dev.sunless.auth_api.models.Role;
 import dev.sunless.auth_api.models.User;
+import dev.sunless.auth_api.repositories.RoleRepository;
 import dev.sunless.auth_api.repositories.UserRepository;
 import dev.sunless.auth_api.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,6 +25,7 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     @Override
     public User save(User user, Set<UUID> roles) {
@@ -65,7 +69,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateRoles(UUID id, Set<UUID> roles) {
-        return null;
+        User user = userExistsOrThrow(id);
+        if(user.isSoftDeleted())
+            throw new IllegalStateException("Cannot update the roles of a inactive user");
+        Set<Role> newRoles = new HashSet<>(roleRepository.findByIdIn(roles));
+        validateUserRoles(roles.size(), newRoles.size());
+        user.setRoles(newRoles);
+        return userRepository.save(user);
     }
 
     @Override
@@ -115,7 +125,7 @@ public class UserServiceImpl implements UserService {
 
     private User userExistsOrThrow(UUID id) {
         return findById(id).orElseThrow(
-                () -> new NotFoundException("Role with ID: " + id)
+                () -> new NotFoundException("User with ID: " + id)
         );
     }
 }
