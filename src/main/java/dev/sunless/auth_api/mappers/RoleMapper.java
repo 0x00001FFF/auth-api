@@ -4,6 +4,7 @@ import dev.sunless.auth_api.dtos.request.RoleRequestDto;
 import dev.sunless.auth_api.dtos.response.InactiveRoleResponseDto;
 import dev.sunless.auth_api.dtos.response.PermissionResponseDto;
 import dev.sunless.auth_api.dtos.response.RoleResponseDto;
+import dev.sunless.auth_api.dtos.response.SimpleRoleResponseDto;
 import dev.sunless.auth_api.models.Permission;
 import dev.sunless.auth_api.models.Role;
 import org.mapstruct.Mapper;
@@ -48,11 +49,16 @@ public abstract class RoleMapper {
     @Mapping(target = "name", source = "role.name")
     public abstract InactiveRoleResponseDto toInactiveResponse(Role role);
 
+    @Mapping(target = "id", source = "role.id")
+    @Mapping(target = "name", source = "role.name")
+    @Mapping(target = "description", source = "role.description")
+    public abstract SimpleRoleResponseDto toSimpleRoleResponseDto(Role role);
+
     protected Set<PermissionResponseDto> filterActivePermissions(Set<Permission> permissions) {
         return permissions
                 .stream()
                 .filter(permission -> permission.getDeletedAt() == null)
-                .map(permission -> permissionMapper.toResponse(permission))
+                .map(permissionMapper::toResponse)
                 .collect(Collectors.toSet());
     }
 

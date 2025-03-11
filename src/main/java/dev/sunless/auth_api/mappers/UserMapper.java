@@ -2,18 +2,24 @@ package dev.sunless.auth_api.mappers;
 
 import dev.sunless.auth_api.dtos.request.UserRequestDto;
 import dev.sunless.auth_api.dtos.response.InactiveUserResponseDto;
+import dev.sunless.auth_api.dtos.response.SimpleRoleResponseDto;
 import dev.sunless.auth_api.dtos.response.UserResponseDto;
 import dev.sunless.auth_api.models.Role;
 import dev.sunless.auth_api.models.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class UserMapper {
+
+    @Autowired
+    private RoleMapper roleMapper;
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userName", source = "requestDto.userName")
@@ -30,7 +36,12 @@ public abstract class UserMapper {
 
     @Mapping(target = "userName", source = "user.userName")
     @Mapping(target = "email", source = "user.email")
-    @Mapping(target = "roles", source = "user.roles")
+    @Mapping(target = "roles",
+            expression = """
+                    java(
+                        filterActiveRoles(user.getRoles())
+                    )
+                    """)
     @Mapping(target = "isActive", source = "user.isActive")
     @Mapping(target = "createdDate", source = "user.createdDate")
     @Mapping(target = "lastModified", source = "user.lastModified")
@@ -47,4 +58,12 @@ public abstract class UserMapper {
     @Mapping(target = "deletedAt", source = "user.deletedAt")
     @Mapping(target = "id", source = "user.id")
     public abstract InactiveUserResponseDto toInactiveResponse(User user);
+
+
+    protected Set<SimpleRoleResponseDto> filterActiveRoles(Set<Role> roles) {
+        return roles.stream()
+                .filter(r -> r.getDeletedAt() == null)
+                .map(roleMapper::toSimpleRoleResponseDto)
+                .collect(Collectors.toSet());
+    }
 }
